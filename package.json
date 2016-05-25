@@ -1,0 +1,19 @@
+{
+  "name": "speedhud",
+  "version": "1.0.0",
+  "description": "A simple HUD to show your current speed",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "android-bundle": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.android.js --dev false --platform android",
+    "manual-android-bundle": "curl 'http://localhost:8081/index.android.bundle?platform=android&dev=false' -o 'android/app/src/main/assets/index.android.bundle'",
+    "manual-ios-bundle": "curl 'http://localhost:8081/index.android.bundle?platform=ios&dev=false' -o 'ios/main.jsbundle'",
+    "deploy-android": "node node_modules/react-native/local-cli/cli.js run-android",
+    "bundle-and-deploy-android": "npm run manual-android-bundle && node node_modules/react-native/local-cli/cli.js run-android",
+    "start-android": "adb shell am start -n com.hudnative/.MainActivity"
+  },
+  "dependencies": {
+    "react": "^15.0.2",
+    "react-native": "^0.26.0"
+  }
+}
