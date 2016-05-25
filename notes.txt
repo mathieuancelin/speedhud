@@ -1,2 +1,0 @@
-agvtool bump -all
-agvtool new-marketing-version "1.0.1"
