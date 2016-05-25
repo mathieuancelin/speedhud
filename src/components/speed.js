@@ -26,7 +26,7 @@ export const Speed = React.createClass({
           paddingTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
-          backgroundColor: 0,
+          backgroundColor: 'rgba(0,0,0,0)',
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -42,14 +42,19 @@ export const Speed = React.createClass({
           }] }}>
         <Text style={{
           letterSpacing: 0,
-          backgroundColor: 0,
+          backgroundColor: 'rgba(0,0,0,0)',
           color: this.props.textColorWithWarning,
           fontWeight: 'bold',
           fontSize: 200,
           writingDirection: 'rtl' }}>
           {this.props.mock ? this.props.mockSpeed : this.cleanupSpeed(this.props.speed).toFixed(0)}
         </Text>
-        <Text style={{ color: this.props.textColor, backgroundColor: 0, opacity: 0.9, fontSize: 80, marginLeft: 30 }}>
+        <Text style={{
+          color: this.props.textColor,
+          backgroundColor: 'rgba(0,0,0,0)',
+          opacity: 0.9,
+          fontSize: 80,
+          marginLeft: 30 }}>
           {this.props.mode}
         </Text>
       </View>
