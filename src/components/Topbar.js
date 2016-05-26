@@ -41,7 +41,7 @@ export const Topbar = React.createClass({
         <View style={{ flex: 1, flexDirection: 'row', width: width - 150 }}>
           <Text style={{ color: this.props.textColor, fontSize: 30, paddingTop: 7, opacity: 0.9 }}>max</Text>
           <Text style={{ color: this.props.textColor, fontSize: 30, paddingTop: 12, opacity: 0.9 }}>/</Text>
-          <Text style={{ color: this.props.textColor, fontSize: 30, paddingTop: 17, opacity: 0.9 }}>moy </Text>
+          <Text style={{ color: this.props.textColor, fontSize: 30, paddingTop: 17, opacity: 0.9 }}>avg </Text>
           <View style={{ width: 20 }}></View>
           <Text style={{ color: this.props.textColor, fontSize: 50, paddingTop: 0 }}>
             {this.props.mock ? this.props.mockSpeed : this.cleanupSpeed(this.props.max).toFixed(0)}

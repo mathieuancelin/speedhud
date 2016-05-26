@@ -4,6 +4,7 @@ import { Toolbar } from './components/Toolbar';
 import { Topbar } from './components/Topbar';
 import { SpeedMonitor } from './components/SpeedMonitor';
 import { MessageBar } from './components/MessageBar';
+import * as SpeedStats from './services/httpSpeedStats';
 
 import { PanResponder, View } from 'react-native';
 
@@ -175,12 +176,17 @@ export const HUD = React.createClass({
           textColor={textColor}
           textColorWithWarning={textColorWithWarning} />
         <Toolbar
+          stats={SpeedStats.isRunning()}
           debug={this.state.debug}
           mode={this.state.mode}
           toggleMode={this.toggleMode}
           toggleMock={this.toggleMock}
           toggleWatch={this.toggleWatch}
-          nativeWatch={this.state.nativeWatch} />
+          nativeWatch={this.state.nativeWatch}
+          toggleStats={() => {
+            SpeedStats.toggle();
+            this.forceUpdate();
+          }} />
         <MessageBar debug={this.state.debug} error={this.state.error} />
       </View>
     );
