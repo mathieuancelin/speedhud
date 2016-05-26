@@ -2,7 +2,7 @@ import React from 'react';
 import { startTracking, stopTracking, toggleNativeWatch, nativeWatch, subscribe } from './speedwatcher';
 import { Toolbar } from './components/toolbar';
 import { Topbar, NewTopbar } from './components/topbar';
-import { Speed } from './components/speed';
+import { SpeedMonitor } from './components/SpeedMonitor';
 
 import { PanResponder, View } from 'react-native';
 
@@ -163,7 +163,7 @@ export const HUD = React.createClass({
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: backColor }}>
         <NewTopbar {...this.state} textColor={textColor} />
-        <Speed {...this.state}
+        <SpeedMonitor {...this.state}
           panResponder={this._panResponder}
           textColor={textColor}
           textColorWithWarning={textColorWithWarning} />

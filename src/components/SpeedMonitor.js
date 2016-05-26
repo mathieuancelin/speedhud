@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Dimensions, Text, View } from 'react-native';
 
-export const Speed = React.createClass({
+export const SpeedMonitor = React.createClass({
   propTypes: {
     flip: React.PropTypes.bool.isRequired,
     angle: React.PropTypes.number.isRequired,
