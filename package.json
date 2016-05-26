@@ -13,7 +13,7 @@
     "start-android": "adb shell am start -n com.hudnative/.MainActivity"
   },
   "dependencies": {
-    "react": "^15.0.2",
-    "react-native": "^0.26.0"
+    "react": "15.0.2",
+    "react-native": "0.26.0"
   }
 }

@@ -10,22 +10,20 @@ export const Toolbar = React.createClass({
     toggleMode: React.PropTypes.func.isRequired,
     mode: React.PropTypes.string.isRequired,
   },
-  getDefaultProps() {
-    return {
-      error: null,
-    };
-  },
   render() {
     const width = Dimensions.get('window').width;
     return (
       <View style={{
           width,
           backgroundColor: 'rgba(0,0,0,0)',
-          flex: 1,
+          flex: 0,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginTop: 35 }}>
+          height: 60,
+          borderColor: this.props.debug ? 'red' : null,
+          borderWidth: this.props.debug ? 1 : null,
+        }}>
         <TouchableWithoutFeedback onPress={this.props.toggleMock}>
           <View style={{
             paddingLeft: 20,
@@ -61,11 +59,6 @@ export const Toolbar = React.createClass({
               color: 'rgb(68, 68, 68)' }}>{this.props.nativeWatch ? '(native)' : '(emulated)'}</Text>
           </View>
         </TouchableWithoutFeedback>
-        <Text style={{
-          color: 'red',
-          backgroundColor: 'rgba(0,0,0,0)',
-          fontSize: 20,
-          width: this.props.width - 40 }}>{this.props.error ? this.props.error.message : ''}</Text>
       </View>
     );
   }

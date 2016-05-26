@@ -1,8 +1,9 @@
 import React from 'react';
 import { startTracking, stopTracking, toggleNativeWatch, nativeWatch, subscribe } from './speedwatcher';
-import { Toolbar } from './components/toolbar';
-import { Topbar, NewTopbar } from './components/topbar';
+import { Toolbar } from './components/Toolbar';
+import { Topbar } from './components/Topbar';
 import { SpeedMonitor } from './components/SpeedMonitor';
+import { MessageBar } from './components/MessageBar';
 
 import { PanResponder, View } from 'react-native';
 
@@ -30,6 +31,7 @@ function cleanupArray(arr) {
 export const HUD = React.createClass({
   getInitialState() {
     return {
+      debug: false,
       nativeWatch: nativeWatch(),
       mode: 'km/h',
       speedFactor: 1.0,
@@ -45,7 +47,7 @@ export const HUD = React.createClass({
       flip: true,
       speed: 0.0,
       actualSpeed: 0.0,
-      error: null,
+      error: 'Une belle erreur ...',
       coords: {
         latitude: 0.0,
         longitude: 0.0,
@@ -161,19 +163,25 @@ export const HUD = React.createClass({
     const textColor = themes[index].color;
     const textColorWithWarning = this.cleanupSpeed(this.state.speed) > this.cleanupSpeed(133.0) ? 'red' : themes[index].color;
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: backColor }}>
-        <NewTopbar {...this.state} textColor={textColor} />
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: backColor }}>
+        <Topbar {...this.state} textColor={textColor} />
         <SpeedMonitor {...this.state}
+          debug={this.state.debug}
           panResponder={this._panResponder}
           textColor={textColor}
           textColorWithWarning={textColorWithWarning} />
         <Toolbar
+          debug={this.state.debug}
           mode={this.state.mode}
-          error={this.state.error}
           toggleMode={this.toggleMode}
           toggleMock={this.toggleMock}
           toggleWatch={this.toggleWatch}
           nativeWatch={this.state.nativeWatch} />
+        <MessageBar debug={this.state.debug} error={this.state.error} />
       </View>
     );
   },

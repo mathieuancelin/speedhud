@@ -22,7 +22,8 @@ export const SpeedMonitor = React.createClass({
     const width = Dimensions.get('window').width;
     return (
       <View {...this.props.panResponder.panHandlers} style={{
-          // minHeight: 160,
+          borderColor: this.props.debug ? 'orange' : null,
+          borderWidth: this.props.debug ? 1 : null,
           paddingTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
