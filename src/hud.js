@@ -186,3 +186,28 @@ export const HUD = React.createClass({
     );
   },
 });
+
+/*
+
+<View style={{
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: backColor }}>
+  <Topbar {...this.state} textColor={textColor} />
+  <SpeedMonitor {...this.state}
+    debug={this.state.debug}
+    panResponder={this._panResponder}
+    textColor={textColor}
+    textColorWithWarning={textColorWithWarning} />
+  <Toolbar
+    debug={this.state.debug}
+    mode={this.state.mode}
+    toggleMode={this.toggleMode}
+    toggleMock={this.toggleMock}
+    toggleWatch={this.toggleWatch}
+    nativeWatch={this.state.nativeWatch} />
+  <MessageBar debug={this.state.debug} error={this.state.error} />
+</View>
+
+*/
