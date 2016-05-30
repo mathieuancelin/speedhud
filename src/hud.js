@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { startTracking, stopTracking, toggleNativeWatch, nativeWatch, subscribe } from './speedwatcher';
 import { Toolbar } from './components/Toolbar';
 import { Topbar } from './components/Topbar';
@@ -9,15 +10,15 @@ import * as SpeedStats from './services/httpSpeedStats';
 import { PanResponder, View } from 'react-native';
 
 const themes = [
-  { color: 'white', back: 'black' },
-  { color: 'Aqua', back: 'black' },
-  { color: '#00DEFF', back: 'black' },
-  { color: 'yellow', back: 'black' },
-  { color: 'LawnGreen', back: 'black' },
-  { color: '#3DFF33', back: 'black' },
-  { color: 'DeepPink', back: 'black' },
-  { color: '#F433FF', back: 'black' },
-  { color: 'orange', back: 'black' },
+  { color: '#FFFFFF', back: 'black' }, // white
+  { color: '#00FFFF', back: 'black' }, // cyan
+  { color: '#00DEFF', back: 'black' }, // lightblue
+  { color: '#FFFF00', back: 'black' }, // yellow
+  { color: '#B1FB17', back: 'black' }, // green yellow
+  { color: '#3DFF33', back: 'black' }, // vert
+  { color: '#F52887', back: 'black' }, // deep pink
+  { color: '#F433FF', back: 'black' }, // rose fushia
+  { color: '#F87217', back: 'black' }, // orange
   { color: 'black', back: 'white' },
   { color: 'black', back: 'white' },
 ];
@@ -119,6 +120,7 @@ export const HUD = React.createClass({
             max = speed;
           }
           this.setState({ speed, max, actualSpeed: speed, error, timestamp, coords });
+          SpeedStats.push({ position: coords, speed });
         }
       }
       const now = Date.now();
@@ -130,10 +132,12 @@ export const HUD = React.createClass({
       }
     });
     startTracking();
+    SpeedStats.start();
   },
   componentWillUnmount() {
     this.unsubscribe();
     stopTracking();
+    SpeedStats.stop();
   },
   flip() {
     this.setState({ flip: !this.state.flip });
@@ -152,10 +156,12 @@ export const HUD = React.createClass({
   },
   toggleWatch() {
     stopTracking();
+    SpeedStats.stop();
     toggleNativeWatch();
     this.setState({ nativeWatch: nativeWatch() });
     setTimeout(() => {
       startTracking();
+      SpeedStats.start();
     }, 2500);
   },
   render() {
