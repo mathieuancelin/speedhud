@@ -28,7 +28,11 @@ export const Toolbar = React.createClass({
           <View style={{
             paddingLeft: 20,
             paddingRight: 20,
+            marginLeft: 20,
             backgroundColor: 'rgba(0,0,0,0)',
+            borderWidth: 1,
+            borderColor: 'rgb(68, 68, 68)',
+            borderRadius: 6,
           }}>
             <Image style={{ width: 40, height: 40 }} source={{ uri: icon }} />
           </View>
@@ -38,6 +42,9 @@ export const Toolbar = React.createClass({
             paddingLeft: 20,
             paddingRight: 20,
             backgroundColor: 'rgba(0,0,0,0)',
+            borderWidth: 1,
+            borderColor: 'rgb(68, 68, 68)',
+            borderRadius: 6,
           }}>
             <Text style={{
               height: 40,

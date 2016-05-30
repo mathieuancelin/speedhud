@@ -19,5 +19,8 @@ export function toggle() {
 }
 
 export function push(data) {
-  
+
 }
+
+// TODO : bucket class
+// TODO : push to server with resilience
