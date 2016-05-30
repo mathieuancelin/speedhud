@@ -179,6 +179,7 @@ export const HUD = React.createClass({
           stats={SpeedStats.isRunning()}
           debug={this.state.debug}
           mode={this.state.mode}
+          demo={this.state.mock}
           toggleMode={this.toggleMode}
           toggleMock={this.toggleMock}
           toggleWatch={this.toggleWatch}
