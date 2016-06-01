@@ -62,7 +62,7 @@ function sendToServer() {
       },
       body: JSON.stringify(valuesToSend)
     }).then(data => {
-      console.log(data);
+      // console.log(data);
       timeoutId = setTimeout(sendToServer, sendEvery);
     }, error => {
       console.log(`Error while sending data to the server : ${error.message}`);
