@@ -4,7 +4,7 @@ import uuid from 'uuid';
 
 const values = [];
 const sendEvery = 60000;
-const MAX_VALUES = 50000;
+const MAX_VALUES = 5000;
 
 let running = true;
 let timeoutId = null;
@@ -14,25 +14,27 @@ export function isRunning() {
   return running;
 }
 
-export function start() {
+export function start(cb) {
   running = true;
   sessionId = uuid.v4();
   sendToServer();
+  if (cb) cb();
 }
 
-export function stop() {
+export function stop(cb) {
   sendToServer();
   running = false;
   clearTimeout(timeoutId);
   timeoutId = null;
   sessionId = null;
+  if (cb) cb();
 }
 
-export function toggle() {
+export function toggle(cb) {
   if (running) {
-    stop();
+    stop(cb);
   } else {
-    start();
+    start(cb);
   }
 }
 
@@ -41,9 +43,9 @@ export function push(data) {
     values.shift();
   }
   values.push(Object.assign({}, data, {
-    clientTime: Date.now(),
-    clientDate: moment().format('DD-MM-YYYY_hh:mm:ss:SSS'),
-    OS: Platform.OS,
+    ctime: Date.now(),
+    //clientDate: moment().format('DD-MM-YYYY_hh:mm:ss:SSS'),
+    os: Platform.OS,
   }));
 }
 
@@ -52,7 +54,7 @@ function sendToServer() {
   if (values.length > 0) {
     const valuesToSend = values;
     values = [];
-    fetch(`/speedrecording/${sessionId}`, {
+    fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -60,8 +62,10 @@ function sendToServer() {
       },
       body: JSON.stringify(valuesToSend)
     }).then(data => {
+      console.log(data);
       timeoutId = setTimeout(sendToServer, sendEvery);
     }, error => {
+      console.log(`Error while sending data to the server : ${error.message}`);
       values = values.concat(valuesToSend);
       timeoutId = setTimeout(sendToServer, sendEvery);
     });

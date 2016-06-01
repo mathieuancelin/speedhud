@@ -120,11 +120,11 @@ export const HUD = React.createClass({
             max = speed;
           }
           this.setState({ speed, max, actualSpeed: speed, error, timestamp, coords });
-          SpeedStats.push({ position: coords, speed });
+          SpeedStats.push({ pos: coords, speed });
         }
       }
       const now = Date.now();
-      if (now - this.state.lastMoy > 10000) {
+      if (now - this.state.lastMoy > 5000) {
         const moy = this.state.moyArr.length > 0 ?
           this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
           0;
@@ -190,11 +190,8 @@ export const HUD = React.createClass({
           toggleMock={this.toggleMock}
           toggleWatch={this.toggleWatch}
           nativeWatch={this.state.nativeWatch}
-          toggleStats={() => {
-            SpeedStats.toggle();
-            this.forceUpdate();
-          }} />
-        <MessageBar debug={this.state.debug} error={this.state.error} />
+          toggleStats={() => SpeedStats.toggle(() => this.forceUpdate())} />
+        <MessageBar debug={this.state.debug} error={this.state.error ? (this.state.error.message || this.state.error) : ''} />
       </View>
     );
   },
