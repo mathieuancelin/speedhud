@@ -171,7 +171,7 @@ export const HUD = React.createClass({
             max = speed;
           }
           this.setState({ speed, max, actualSpeed: speed, error, timestamp, coords });
-          if (speed > 5.0) {
+          if (speed > 3.0) {
             SpeedStats.push({ pos: coords, speed });
           }
         }
