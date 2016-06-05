@@ -14,7 +14,6 @@ import * as SpeedStats from './services/httpSpeedStats';
 
 import { AsyncStorage, AppState, NetInfo, PanResponder, View } from 'react-native';
 
-const sendStatsKey = 'USER_ACCEPTS_STATS_SENDING';
 const themes = [
   { color: '#FFFFFF', back: 'black' }, // white
   { color: '#00FFFF', back: 'black' }, // cyan
@@ -39,6 +38,7 @@ function cleanupArray(arr) {
 export const HUD = React.createClass({
   getInitialState() {
     return {
+      connected: false,
       debug: false,
       nativeWatch: nativeWatch(),
       mode: 'km/h',
@@ -112,6 +112,7 @@ export const HUD = React.createClass({
   },
   netInfoReachChanged(reach) {
     if (reach !== null) {
+      this.updateConnected();
       if (reach === 'none' || reach === 'NONE') {
         console.log('App lost data connectivity');
       } else {
@@ -134,9 +135,27 @@ export const HUD = React.createClass({
       }
     }
   },
+  rehydrateFromAsyncStorage() {
+    console.log('reading USER_PREFERENCES');
+    AsyncStorage.getItem('USER_PREFERENCES').then(doc => {
+      if (doc !== null) {
+        console.log(`USER_PREFERENCES are ${doc}`);
+        this.setState(JSON.parse(doc));
+      }
+    });
+  },
+  saveIntoAsyncStorage() {
+    console.log('Saving user preferences');
+    AsyncStorage.setItem('USER_PREFERENCES', JSON.stringify({
+      flip: this.state.flip,
+      mode: this.state.mode,
+      theme: this.state.theme,
+    }));
+  },
   componentDidMount() {
     NetInfo.addEventListener('change', this.netInfoReachChanged);
     AppState.addEventListener('change', this.appStateChanged);
+    this.rehydrateFromAsyncStorage();
     this.unsubscribe = subscribe(e => {
       const { speed, timestamp, error, coords } = e;
       if (error) {
@@ -169,6 +188,7 @@ export const HUD = React.createClass({
   },
   unIdleApp() {
     console.log('unIdle App')
+    this.rehydrateFromAsyncStorage();
     startTracking();
     AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING').then(doc => {
       if (doc === null) {
@@ -185,20 +205,28 @@ export const HUD = React.createClass({
         }
       }
     });
+    this.updateConnected();
     // SpeedStats.start();
+  },
+  updateConnected() {
+    NetInfo.isConnected.fetch().then(connected => {
+      console.log(`App is ${connected ? 'connected' : 'not connected'}`);
+      this.setState({ connected });
+    });
   },
   idleApp() {
     console.log('Idle App, stopping everything');
+    this.saveIntoAsyncStorage();
     if (SpeedStats.isRunning()) {
       SpeedStats.flush();
     }
     stopTracking();
     SpeedStats.stop();
-    // TODO : store orientation, mode and color so it can be there the next time
   },
   componentWillUnmount() {
     this.idleApp();
     this.unsubscribe();
+    this.saveIntoAsyncStorage();
     NetInfo.removeEventListener('change', this.netInfoReachChanged);
     AppState.removeEventListener('change', this.appStateChanged);
     console.log('component will unmount, app is killed I guess')
@@ -254,6 +282,7 @@ export const HUD = React.createClass({
           textColor={textColor}
           textColorWithWarning={textColorWithWarning} />
         <Toolbar
+          connected={!!this.state.connected}
           stats={SpeedStats.isRunning()}
           debug={this.state.debug}
           mode={this.state.mode}
