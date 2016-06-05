@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, AsyncStorage } from 'react-native';
 import moment from 'moment';
 import uuid from 'uuid';
 
@@ -18,6 +18,8 @@ export function start(cb) {
   running = true;
   sessionId = uuid.v4();
   sendToServer();
+  AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+  console.log('Start sending stats');
   if (cb) cb();
 }
 
@@ -27,6 +29,8 @@ export function stop(cb) {
   clearTimeout(timeoutId);
   timeoutId = null;
   sessionId = null;
+  AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: false }))
+  console.log('Stop sending stats');
   if (cb) cb();
 }
 
@@ -44,9 +48,12 @@ export function push(data) {
   }
   values.push(Object.assign({}, data, {
     ctime: Date.now(),
-    //clientDate: moment().format('DD-MM-YYYY_hh:mm:ss:SSS'),
     os: Platform.OS,
   }));
+}
+
+export function flush() {
+  sendToServer();
 }
 
 function sendToServer() {
@@ -54,6 +61,7 @@ function sendToServer() {
   if (values.length > 0) {
     const valuesToSend = values;
     values = [];
+    console.log(`Sending ${valuesToSend.length} report now`);
     fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
       method: 'POST',
       headers: {

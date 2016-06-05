@@ -74,7 +74,7 @@ export const Toolbar = React.createClass({
         </View>*/}
         <View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
           <Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
-          <Switch value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />
+          <Switch onTintColor="rgb(68, 68, 68)" value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />
         </View>
       </View>
     );

@@ -50,6 +50,7 @@ function fakeWatchPosition() {
 }
 
 export function startTracking() {
+  console.log('Start tracking user position');
   watching = true;
   useNativeWatch ? nativeWatchPosition() : fakeWatchPosition();
 }
@@ -63,6 +64,7 @@ export function nativeWatch() {
 }
 
 export function stopTracking() {
+  console.log('Stop tracking user position');
   watching = false;
   navigator.geolocation.clearWatch(watchId);
 }

@@ -1,14 +1,20 @@
 import React from 'react';
 
-import { startTracking, stopTracking, toggleNativeWatch, nativeWatch, subscribe } from './speedwatcher';
+import {
+  startTracking,
+  stopTracking,
+  toggleNativeWatch,
+  nativeWatch,
+  subscribe } from './speedwatcher';
 import { Toolbar } from './components/Toolbar';
 import { Topbar } from './components/Topbar';
 import { SpeedMonitor } from './components/SpeedMonitor';
 import { MessageBar } from './components/MessageBar';
 import * as SpeedStats from './services/httpSpeedStats';
 
-import { PanResponder, View } from 'react-native';
+import { AsyncStorage, AppState, NetInfo, PanResponder, View } from 'react-native';
 
+const sendStatsKey = 'USER_ACCEPTS_STATS_SENDING';
 const themes = [
   { color: '#FFFFFF', back: 'black' }, // white
   { color: '#00FFFF', back: 'black' }, // cyan
@@ -104,7 +110,28 @@ export const HUD = React.createClass({
       onShouldBlockNativeResponder: () => true,
     });
   },
+  netInfoReachChanged(reach) {
+    if (reach === 'none' || reach === 'NONE') {
+      console.log('App lost data connectivity');
+    } else {
+      console.log(`App reached data connectivity ${reach}`);
+      if (SpeedStats.isRunning()) {
+        SpeedStats.flush();
+      }
+    }
+  },
+  appStateChanged(state) {
+    if (state === 'active') {
+      this.unIdleApp();
+      console.log('App is now active');
+    } else {
+      this.idleApp();
+      console.log('App is now inactive');
+    }
+  },
   componentDidMount() {
+    NetInfo.addEventListener('change', this.netInfoReachChanged);
+    AppState.addEventListener('change', this.appStateChanged);
     this.unsubscribe = subscribe(e => {
       const { speed, timestamp, error, coords } = e;
       if (error) {
@@ -120,24 +147,52 @@ export const HUD = React.createClass({
             max = speed;
           }
           this.setState({ speed, max, actualSpeed: speed, error, timestamp, coords });
-          SpeedStats.push({ pos: coords, speed });
+          if (speed > 5.0) {
+            SpeedStats.push({ pos: coords, speed });
+          }
         }
       }
       const now = Date.now();
-      if (now - this.state.lastMoy > 5000) {
+      if (speed > 3.0 && ((now - this.state.lastMoy) > 5000)) {
         const moy = this.state.moyArr.length > 0 ?
           this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
           0;
         this.setState({ moyArr: cleanupArray([...this.state.moyArr, this.state.speed]), lastMoy: Date.now(), moy: moy < 0 ? 0 : moy });
       }
     });
-    startTracking();
-    SpeedStats.start();
+    this.unIdleApp();
   },
-  componentWillUnmount() {
-    this.unsubscribe();
+  unIdleApp() {
+    console.log('unIdle App')
+    startTracking();
+    AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING').then(doc => {
+      console.log('user_send_stats fron AsyncStorage', doc);
+      const value = JSON.parse(doc).value;
+      if (value && !SpeedStats.isRunning()) {
+        SpeedStats.start();
+        SpeedStats.flush();
+      }
+      if (!value && SpeedStats.isRunning()) {
+        SpeedStats.stop();
+      }
+    });
+    // SpeedStats.start();
+  },
+  idleApp() {
+    console.log('Idle App, stopping everything');
+    if (SpeedStats.isRunning()) {
+      SpeedStats.flush();
+    }
     stopTracking();
     SpeedStats.stop();
+    // TODO : store orientation, mode and color so it can be there the next time
+  },
+  componentWillUnmount() {
+    this.idleApp();
+    this.unsubscribe();
+    NetInfo.removeEventListener('change', this.netInfoReachChanged);
+    AppState.removeEventListener('change', this.appStateChanged);
+    console.log('component will unmount, app is killed I guess')
   },
   flip() {
     this.setState({ flip: !this.state.flip });
