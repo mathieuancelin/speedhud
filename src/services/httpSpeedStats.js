@@ -18,7 +18,6 @@ export function start(cb) {
   running = true;
   sessionId = uuid.v4();
   sendToServer();
-  AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
   console.log('Start sending stats');
   if (cb) cb();
 }
@@ -29,7 +28,6 @@ export function stop(cb) {
   clearTimeout(timeoutId);
   timeoutId = null;
   sessionId = null;
-  AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: false }))
   console.log('Stop sending stats');
   if (cb) cb();
 }

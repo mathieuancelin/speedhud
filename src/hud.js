@@ -111,22 +111,27 @@ export const HUD = React.createClass({
     });
   },
   netInfoReachChanged(reach) {
-    if (reach === 'none' || reach === 'NONE') {
-      console.log('App lost data connectivity');
-    } else {
-      console.log(`App reached data connectivity ${reach}`);
-      if (SpeedStats.isRunning()) {
-        SpeedStats.flush();
+    if (reach !== null) {
+      if (reach === 'none' || reach === 'NONE') {
+        console.log('App lost data connectivity');
+      } else {
+        // TODO : show connectivity
+        console.log(`App reached data connectivity ${reach}`);
+        if (SpeedStats.isRunning()) {
+          SpeedStats.flush();
+        }
       }
     }
   },
   appStateChanged(state) {
-    if (state === 'active') {
-      this.unIdleApp();
-      console.log('App is now active');
-    } else {
-      this.idleApp();
-      console.log('App is now inactive');
+    if (state !== null) {
+      if (state === 'active') {
+        this.unIdleApp();
+        console.log(`App is now active : ${state}`);
+      } else {
+        this.idleApp();
+        console.log(`App is now active : ${state}`);
+      }
     }
   },
   componentDidMount() {
@@ -166,14 +171,18 @@ export const HUD = React.createClass({
     console.log('unIdle App')
     startTracking();
     AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING').then(doc => {
-      console.log('user_send_stats fron AsyncStorage', doc);
-      const value = JSON.parse(doc).value;
-      if (value && !SpeedStats.isRunning()) {
-        SpeedStats.start();
-        SpeedStats.flush();
-      }
-      if (!value && SpeedStats.isRunning()) {
-        SpeedStats.stop();
+      if (doc === null) {
+        AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+      } else {
+        console.log('user_send_stats fron AsyncStorage', doc);
+        const value = JSON.parse(doc).value;
+        if (value && !SpeedStats.isRunning()) {
+          SpeedStats.start();
+          SpeedStats.flush();
+        }
+        if (!value && SpeedStats.isRunning()) {
+          SpeedStats.stop();
+        }
       }
     });
     // SpeedStats.start();
@@ -196,6 +205,14 @@ export const HUD = React.createClass({
   },
   flip() {
     this.setState({ flip: !this.state.flip });
+  },
+  toggleStats() {
+    if (SpeedStats.isRunning()) {
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: false }))
+    } else {
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+    }
+    SpeedStats.toggle(() => this.forceUpdate());
   },
   toggleMode() {
     if (this.state.mode === 'km/h') {
@@ -245,7 +262,7 @@ export const HUD = React.createClass({
           toggleMock={this.toggleMock}
           toggleWatch={this.toggleWatch}
           nativeWatch={this.state.nativeWatch}
-          toggleStats={() => SpeedStats.toggle(() => this.forceUpdate())} />
+          toggleStats={this.toggleStats} />
         <MessageBar debug={this.state.debug} error={this.state.error ? (this.state.error.message || this.state.error) : ''} />
       </View>
     );
