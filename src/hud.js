@@ -116,7 +116,6 @@ export const HUD = React.createClass({
       if (reach === 'none' || reach === 'NONE') {
         console.log('App lost data connectivity');
       } else {
-        // TODO : show connectivity
         console.log(`App reached data connectivity ${reach}`);
         if (SpeedStats.isRunning()) {
           SpeedStats.flush();
@@ -207,7 +206,6 @@ export const HUD = React.createClass({
       }
     });
     this.updateConnected();
-    // SpeedStats.start();
   },
   updateConnected() {
     NetInfo.isConnected.fetch().then(connected => {
@@ -217,6 +215,7 @@ export const HUD = React.createClass({
   },
   idleApp() {
     console.log('Idle App, stopping everything');
+    // TODO : ask httpService to save data into storage
     this.saveIntoAsyncStorage();
     if (SpeedStats.isRunning()) {
       SpeedStats.flush();

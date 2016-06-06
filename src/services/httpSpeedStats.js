@@ -59,6 +59,12 @@ export function flush() {
   sendToServer();
 }
 
+export function saveIntoAsyncStorage() {
+  const valuesToSave = values;
+  values = [];
+  AsyncStorage.setItem('USER_LAST_REPORTS', JSON.stringify(valuesToSave));
+}
+
 function sendToServer() {
   if (!running) return;
   if (values.length > 0) {
@@ -77,11 +83,11 @@ function sendToServer() {
       error = false;
       timeoutId = setTimeout(sendToServer, sendEvery);
     }, error => {
-      // TODO : save into storage
       console.log(`Error while sending data to the server : ${error.message}`);
       error = true;
       values = values.concat(valuesToSend);
       timeoutId = setTimeout(sendToServer, sendEvery);
+      // TODO : save into async storage
     });
   } else {
     timeoutId = setTimeout(sendToServer, sendEvery);
