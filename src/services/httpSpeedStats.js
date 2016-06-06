@@ -9,9 +9,14 @@ const MAX_VALUES = 5000;
 let running = true;
 let timeoutId = null;
 let sessionId = null;
+let error = false;
 
 export function isRunning() {
   return running;
+}
+
+export function isError() {
+  return error;
 }
 
 export function start(cb) {
@@ -59,6 +64,7 @@ function sendToServer() {
   if (values.length > 0) {
     const valuesToSend = values;
     values = [];
+    // TODO : if data into storage, then send it too
     console.log(`Sending ${valuesToSend.length} report now`);
     fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
       method: 'POST',
@@ -68,10 +74,12 @@ function sendToServer() {
       },
       body: JSON.stringify(valuesToSend)
     }).then(data => {
-      // console.log(data);
+      error = false;
       timeoutId = setTimeout(sendToServer, sendEvery);
     }, error => {
+      // TODO : save into storage
       console.log(`Error while sending data to the server : ${error.message}`);
+      error = true;
       values = values.concat(valuesToSend);
       timeoutId = setTimeout(sendToServer, sendEvery);
     });
@@ -79,6 +87,3 @@ function sendToServer() {
     timeoutId = setTimeout(sendToServer, sendEvery);
   }
 }
-
-// TODO : bucket class
-// TODO : push to server with resilience

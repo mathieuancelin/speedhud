@@ -73,6 +73,9 @@ export const Toolbar = React.createClass({
           <Switch value={this.props.nativeWatch} onValueChange={this.props.toggleWatch} />
         </View>*/}
         <View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
+          <View style={{ marginRight: 7, marginTop: 8, width: 12, height: 10 }}>
+            {this.props.sendError && <Text style={{ color: 'red' }}>∅</Text>}
+          </View>
           <View style={{ marginRight: 10, marginTop: 10, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>
           <Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
           <Switch onTintColor="rgb(68, 68, 68)" value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />

@@ -177,6 +177,7 @@ export const HUD = React.createClass({
         }
       }
       const now = Date.now();
+      // TODO : fix average
       if (speed > 3.0 && ((now - this.state.lastMoy) > 5000)) {
         const moy = this.state.moyArr.length > 0 ?
           this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
@@ -284,6 +285,7 @@ export const HUD = React.createClass({
         <Toolbar
           connected={!!this.state.connected}
           stats={SpeedStats.isRunning()}
+          sendError={SpeedStats.isError()}
           debug={this.state.debug}
           mode={this.state.mode}
           demo={this.state.mock}
