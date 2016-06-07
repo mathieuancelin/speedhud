@@ -10,6 +10,7 @@ import { Toolbar } from './components/Toolbar';
 import { Topbar } from './components/Topbar';
 import { SpeedMonitor } from './components/SpeedMonitor';
 import { MessageBar } from './components/MessageBar';
+import { Average } from './tools/average';
 import * as SpeedStats from './services/httpSpeedStats';
 
 import { AsyncStorage, AppState, NetInfo, PanResponder, View } from 'react-native';
@@ -27,38 +28,6 @@ const themes = [
   { color: 'black', back: 'white' },
   { color: 'black', back: 'white' },
 ];
-
-function cleanupArray(arr) {
-  if (arr.length > 600) {
-    return [...arr].splice(0, arr.length - 600);
-  }
-  return arr;
-}
-
-class Average {
-  constructor(total = 0.0, hits = 0) {
-    this.total = total;
-    this.hits = hits;
-    this.callTime = Date.now();
-    this.value = this.value.bind(this);
-    this.push = this.push.bind(this);
-  }
-  value() {
-    let avg = this.total / this.hits;
-    avg = avg < 0 ? 0 : avg
-    return avg;
-  }
-  lastCall() {
-    return this.callTime;
-  }
-  push(val) {
-    if (val > 2.0) {
-      console.log('push ' + val);
-      return new Average(this.total + val, this.hits + 1);
-    }
-    return this;
-  }
-}
 
 export const HUD = React.createClass({
   getInitialState() {
