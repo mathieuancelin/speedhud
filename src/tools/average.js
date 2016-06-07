@@ -17,7 +17,6 @@ export class Average {
   }
   push(val) {
     if (val > 2.0) {
-      console.log('push ' + val);
       return new Average(this.total + val, this.hits + 1);
     }
     return this;
