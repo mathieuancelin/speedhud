@@ -77263,6 +77263,7 @@ var _Toolbar=require(605 /* ./components/Toolbar */);
 var _Topbar=require(606 /* ./components/Topbar */);
 var _SpeedMonitor=require(607 /* ./components/SpeedMonitor */);
 var _MessageBar=require(608 /* ./components/MessageBar */);
+var _average=require(666 /* ./tools/average */);
 var _httpSpeedStats=require(609 /* ./services/httpSpeedStats */);var SpeedStats=babelHelpers.interopRequireWildcard(_httpSpeedStats);
 
 var _reactNative=require(32 /* react-native */);
@@ -77281,38 +77282,6 @@ var themes=[
 {color:'black',back:'white'}];
 
 
-function cleanupArray(arr){
-if(arr.length>600){
-return [].concat(babelHelpers.toConsumableArray(arr)).splice(0,arr.length-600);}
-
-return arr;}var 
-
-
-Average=function(){
-function Average(){var total=arguments.length<=0||arguments[0]===undefined?0.0:arguments[0];var hits=arguments.length<=1||arguments[1]===undefined?0:arguments[1];babelHelpers.classCallCheck(this,Average);
-this.total=total;
-this.hits=hits;
-this.callTime=Date.now();
-this.value=this.value.bind(this);
-this.push=this.push.bind(this);}babelHelpers.createClass(Average,[{key:'value',value:function value()
-
-{
-var avg=this.total/this.hits;
-avg=avg<0?0:avg;
-return avg;}},{key:'lastCall',value:function lastCall()
-
-{
-return this.callTime;}},{key:'push',value:function push(
-
-val){
-if(val>2.0){
-console.log('push '+val);
-return new Average(this.total+val,this.hits+1);}
-
-return this;}}]);return Average;}();
-
-
-
 var HUD=exports.HUD=_react2.default.createClass({displayName:'HUD',
 getInitialState:function getInitialState(){
 return {
@@ -77321,7 +77290,7 @@ debug:false,
 nativeWatch:(0,_speedwatcher.nativeWatch)(),
 mode:'km/h',
 speedFactor:1.0,
-moy:new Average(),
+moy:new _average.Average(),
 
 
 
@@ -77558,13 +77527,13 @@ _react2.default.createElement(_reactNative.View,{style:{
 flex:1,
 alignItems:'center',
 justifyContent:'center',
-backgroundColor:backColor},__source:{fileName:_jsxFileName,lineNumber:304}},
-_react2.default.createElement(_Topbar.Topbar,babelHelpers.extends({},this.state,{textColor:textColor,__source:{fileName:_jsxFileName,lineNumber:309}})),
+backgroundColor:backColor},__source:{fileName:_jsxFileName,lineNumber:273}},
+_react2.default.createElement(_Topbar.Topbar,babelHelpers.extends({},this.state,{textColor:textColor,__source:{fileName:_jsxFileName,lineNumber:278}})),
 _react2.default.createElement(_SpeedMonitor.SpeedMonitor,babelHelpers.extends({},this.state,{
 debug:this.state.debug,
 panResponder:this._panResponder,
 textColor:textColor,
-textColorWithWarning:textColorWithWarning,__source:{fileName:_jsxFileName,lineNumber:310}})),
+textColorWithWarning:textColorWithWarning,__source:{fileName:_jsxFileName,lineNumber:279}})),
 _react2.default.createElement(_Toolbar.Toolbar,{
 connected:!!this.state.connected,
 stats:SpeedStats.isRunning(),
@@ -77576,8 +77545,8 @@ toggleMode:this.toggleMode,
 toggleMock:this.toggleMock,
 toggleWatch:this.toggleWatch,
 nativeWatch:this.state.nativeWatch,
-toggleStats:this.toggleStats,__source:{fileName:_jsxFileName,lineNumber:315}}),
-_react2.default.createElement(_MessageBar.MessageBar,{debug:this.state.debug,error:this.state.error?this.state.error.message||this.state.error:'',__source:{fileName:_jsxFileName,lineNumber:327}})));}});
+toggleStats:this.toggleStats,__source:{fileName:_jsxFileName,lineNumber:284}}),
+_react2.default.createElement(_MessageBar.MessageBar,{debug:this.state.debug,error:this.state.error?this.state.error.message||this.state.error:'',__source:{fileName:_jsxFileName,lineNumber:296}})));}});
 });
 __d(604 /* speedhud/src/speedwatcher.js */, function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});exports.
 
@@ -77730,17 +77699,25 @@ backgroundColor:'rgba(0,0,0,0)',
 color:'rgb(68, 68, 68)'},__source:{fileName:_jsxFileName,lineNumber:64}},this.props.mode))),
 
 
+_react2.default.createElement(_reactNative.View,{style:{flex:0,flexDirection:'row',paddingLeft:20,paddingRight:20},__source:{fileName:_jsxFileName,lineNumber:71}},
+_react2.default.createElement(_reactNative.TouchableWithoutFeedback,{onPress:this.toggleStatsWithAlert,__source:{fileName:_jsxFileName,lineNumber:72}},
+_react2.default.createElement(_reactNative.View,{style:{
+flex:1,
+flexDirection:'row',
+justifyContent:'center',
+alignItems:'center',
+paddingLeft:20,
+paddingRight:20,
+backgroundColor:this.props.stats?'rgb(25,25,25)':'rgba(0,0,0,0)',
+borderWidth:1,
+borderColor:'rgb(68, 68, 68)',
+borderRadius:6,
+height:40,
+width:250},__source:{fileName:_jsxFileName,lineNumber:73}},
 
-
-
-
-_react2.default.createElement(_reactNative.View,{style:{flex:0,flexDirection:'row',paddingLeft:20,paddingRight:20},__source:{fileName:_jsxFileName,lineNumber:75}},
-_react2.default.createElement(_reactNative.View,{style:{marginRight:7,marginTop:8,width:12,height:10},__source:{fileName:_jsxFileName,lineNumber:76}},
-this.props.sendError&&_react2.default.createElement(_reactNative.Text,{style:{color:'red'},__source:{fileName:_jsxFileName,lineNumber:77}},'∅')),
-
-this.props.stats&&_react2.default.createElement(_reactNative.View,{style:{marginRight:10,marginTop:10,width:10,height:10,borderRadius:5,backgroundColor:this.props.connected?'green':'red'},__source:{fileName:_jsxFileName,lineNumber:79}}),
-_react2.default.createElement(_reactNative.Text,{style:{fontSize:20,backgroundColor:'rgba(0,0,0,0)',color:'rgb(68, 68, 68)'},__source:{fileName:_jsxFileName,lineNumber:80}},'send speed stats  '),
-_react2.default.createElement(_reactNative.Switch,{onTintColor:'rgb(68, 68, 68)',value:this.props.stats,onValueChange:this.toggleStatsWithAlert,__source:{fileName:_jsxFileName,lineNumber:81}}))));}});
+this.props.sendError&&_react2.default.createElement(_reactNative.Text,{style:{marginTop:4,marginRight:10,color:'red'},__source:{fileName:_jsxFileName,lineNumber:87}},'∅'),
+this.props.stats&&_react2.default.createElement(_reactNative.View,{style:{marginRight:10,marginTop:4,width:10,height:10,borderRadius:5,backgroundColor:this.props.connected?'green':'red'},__source:{fileName:_jsxFileName,lineNumber:88}}),
+_react2.default.createElement(_reactNative.Text,{style:{fontSize:20,backgroundColor:'rgba(0,0,0,0)',color:'rgb(68, 68, 68)'},__source:{fileName:_jsxFileName,lineNumber:89}},'send speed stats  '))))));}});
 });
 __d(606 /* speedhud/src/components/Topbar.js */, function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});exports.Topbar=undefined;var _jsxFileName='/Users/mathieuancelin/Dropbox/current-projects/speedhud/src/components/Topbar.js';var _react=require(1 /* react */);var _react2=babelHelpers.interopRequireDefault(_react);
 
@@ -77889,6 +77866,29 @@ fontSize:20,
 width:width},__source:{fileName:_jsxFileName,lineNumber:25}},
 
 this.props.error?this.props.error.message:'')));}});
+});
+__d(666 /* speedhud/src/tools/average.js */, function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});var Average=exports.Average=function(){
+function Average(){var total=arguments.length<=0||arguments[0]===undefined?0.0:arguments[0];var hits=arguments.length<=1||arguments[1]===undefined?0:arguments[1];babelHelpers.classCallCheck(this,Average);
+this.total=total;
+this.hits=hits;
+this.callTime=Date.now();
+this.value=this.value.bind(this);
+this.push=this.push.bind(this);}babelHelpers.createClass(Average,[{key:"value",value:function value()
+
+{
+var avg=this.total/this.hits;
+avg=avg<0?0:avg;
+avg=isNaN(avg)?0:avg;
+return avg;}},{key:"lastCall",value:function lastCall()
+
+{
+return this.callTime;}},{key:"push",value:function push(
+
+val){
+if(val>2.0){
+return new Average(this.total+val,this.hits+1);}
+
+return this;}}]);return Average;}();
 });
 __d(609 /* speedhud/src/services/httpSpeedStats.js */, function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});exports.
 

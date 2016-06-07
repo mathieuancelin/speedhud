@@ -68,19 +68,38 @@ export const Toolbar = React.createClass({
               color: 'rgb(68, 68, 68)' }}>{this.props.mode}</Text>
           </View>
         </TouchableWithoutFeedback>
-        {/*<View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
-          <Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>watch  </Text>
-          <Switch value={this.props.nativeWatch} onValueChange={this.props.toggleWatch} />
-        </View>*/}
         <View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
-          <View style={{ marginRight: 7, marginTop: 8, width: 12, height: 10 }}>
-            {this.props.sendError && <Text style={{ color: 'red' }}>∅</Text>}
-          </View>
-          {this.props.stats && <View style={{ marginRight: 10, marginTop: 10, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>}
-          <Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
-          <Switch onTintColor="rgb(68, 68, 68)" value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />
+          <TouchableWithoutFeedback onPress={this.toggleStatsWithAlert}>
+            <View style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingLeft: 20,
+              paddingRight: 20,
+              backgroundColor: this.props.stats ? 'rgb(25,25,25)' : 'rgba(0,0,0,0)',
+              borderWidth: 1,
+              borderColor: 'rgb(68, 68, 68)',
+              borderRadius: 6,
+              height: 40,
+              width: 250
+            }}>
+              {this.props.sendError && <Text style={{ marginTop: 4, marginRight: 10, color: 'red' }}>∅</Text>}
+              {this.props.stats && <View style={{ marginRight: 10, marginTop: 4, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>}
+              <Text style={{ fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );
   }
 });
+
+/*
+<View style={{ marginRight: 7, marginTop: 8, width: 12, height: 10 }}>
+  {this.props.sendError && <Text style={{ color: 'red' }}>∅</Text>}
+</View>
+{this.props.stats && <View style={{ marginRight: 10, marginTop: 10, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>}
+<Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
+<Switch onTintColor="rgb(68, 68, 68)" value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />
+*/
