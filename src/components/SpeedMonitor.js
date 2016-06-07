@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Dimensions, Text, View } from 'react-native';
+import { Animated, Dimensions, Text, View } from 'react-native';
 
 export const SpeedMonitor = React.createClass({
   propTypes: {
@@ -18,10 +18,24 @@ export const SpeedMonitor = React.createClass({
   cleanupSpeed(s) {
     return s * this.props.speedFactor;
   },
+  componentWillMount() {
+    this.animatedValue = new Animated.Value(-1);
+  },
+  componentWillReceiveProps(nextProps) {
+    if (this.props.flip !== nextProps.flip) {
+      setTimeout(() => {
+        this.animatedValue.setValue(this.props.flip ? -1 : 1);
+        Animated.spring(
+          this.animatedValue,
+          { toValue: this.props.flip ? 1 : -1 }
+        ).start();
+      });
+    }
+  },
   render() {
     const width = Dimensions.get('window').width;
     return (
-      <View {...this.props.panResponder.panHandlers} style={{
+      <Animated.View {...this.props.panResponder.panHandlers} style={{
           paddingTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
@@ -33,7 +47,7 @@ export const SpeedMonitor = React.createClass({
           borderColor: this.props.debug ? 'orange' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: this.props.flip ? -1 : 1
+            scaleX: this.animatedValue // this.props.flip ? -1 : 1
           }, {
             scaleY: 1
           }, {
@@ -58,7 +72,7 @@ export const SpeedMonitor = React.createClass({
           marginLeft: 30 }}>
           {this.props.mode}
         </Text>
-      </View>
+      </Animated.View>
     );
   }
 });

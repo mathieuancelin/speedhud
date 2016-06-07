@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Dimensions, Image, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Animated, Dimensions, Image, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 export const Topbar = React.createClass({
   propTypes: {
@@ -16,13 +16,27 @@ export const Topbar = React.createClass({
   cleanupSpeed(s) {
     return s * this.props.speedFactor;
   },
+  componentWillMount() {
+    this.animatedValue = new Animated.Value(-1);
+  },
+  componentWillReceiveProps(nextProps) {
+    if (this.props.flip !== nextProps.flip) {
+      setTimeout(() => {
+        this.animatedValue.setValue(this.props.flip ? -1 : 1);
+        Animated.spring(
+          this.animatedValue,
+          { toValue: this.props.flip ? 1 : -1 }
+        ).start();
+      });
+    }
+  },
   render() {
     const width = Dimensions.get('window').width;
     const minutes = new Date().getMinutes();
     const hours = new Date().getHours();
     const date = (hours < 10 ? `0${hours}` : hours)+ ':' + (minutes < 10 ? `0${minutes}` : minutes);
     return (
-      <View style={{
+      <Animated.View style={{
           width,
           flex: 0,
           flexDirection: 'row',
@@ -34,7 +48,7 @@ export const Topbar = React.createClass({
           borderColor: this.props.debug ? 'blue' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: this.props.flip ? -1 : 1
+            scaleX: this.animatedValue // this.props.flip ? -1 : 1
           }, {
             scaleY: 1
           }] }}>
@@ -53,7 +67,7 @@ export const Topbar = React.createClass({
           <Text style={{ color: this.props.textColor, fontSize: 17, paddingTop: 22, opacity: 0.9 }}> {this.props.mode}</Text>
         </View>
         <Text style={{ color: this.props.textColor, fontSize: 50 }}>{date}</Text>
-      </View>
+      </Animated.View>
     );
   }
 });
