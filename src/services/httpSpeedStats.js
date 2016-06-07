@@ -6,10 +6,11 @@ const values = [];
 const sendEvery = 60000;
 const MAX_VALUES = 5000;
 
-let running = true;
+let running = false;
 let timeoutId = null;
-let sessionId = null;
+let sessionId = uuid.v4();
 let error = false;
+let sending = false;
 
 export function isRunning() {
   return running;
@@ -67,9 +68,11 @@ export function saveIntoAsyncStorage() {
 
 function sendToServer() {
   if (!running) return;
+  if (sending) return;
   if (values.length > 0) {
     const valuesToSend = values;
     values = [];
+    sending = true;
     // TODO : if data into storage, then send it too
     console.log(`Sending ${valuesToSend.length} report now`);
     fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
@@ -82,14 +85,17 @@ function sendToServer() {
     }).then(data => {
       error = false;
       timeoutId = setTimeout(sendToServer, sendEvery);
-    }, error => {
-      console.log(`Error while sending data to the server : ${error.message}`);
+      sending = false;
+    }, e => {
+      console.log(`Error while sending data to the server : ${e.message}`);
       error = true;
       values = values.concat(valuesToSend);
       timeoutId = setTimeout(sendToServer, sendEvery);
+      sending = false;
       // TODO : save into async storage
     });
   } else {
     timeoutId = setTimeout(sendToServer, sendEvery);
+    sending = false;
   }
 }

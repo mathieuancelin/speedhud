@@ -35,6 +35,25 @@ function cleanupArray(arr) {
   return arr;
 }
 
+class Average {
+  constructor() {
+    this.total = 0.0;
+    this.hits = 0;
+    this.lastCall = 0;
+  }
+  value() {
+    let avg = total / hits;
+    avg = avg < 0 ? 0 : avg
+    return avg;
+  }
+  push(val) {
+    if (val > 2.0) {
+      hits += 1;
+      total = total + val;
+    }
+  }
+}
+
 export const HUD = React.createClass({
   getInitialState() {
     return {
@@ -130,7 +149,7 @@ export const HUD = React.createClass({
         console.log(`App is now active : ${state}`);
       } else {
         this.idleApp();
-        console.log(`App is now active : ${state}`);
+        console.log(`App is now inactive : ${state}`);
       }
     }
   },
@@ -189,23 +208,26 @@ export const HUD = React.createClass({
   unIdleApp() {
     console.log('unIdle App')
     this.rehydrateFromAsyncStorage();
+    this.updateConnected();
     startTracking();
     AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING').then(doc => {
       if (doc === null) {
+        console.log('first run, user will send data');
         AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+        SpeedStats.start();
       } else {
-        console.log('user_send_stats fron AsyncStorage', doc);
+        console.log('user_send_stats from AsyncStorage', doc);
         const value = JSON.parse(doc).value;
         if (value && !SpeedStats.isRunning()) {
           SpeedStats.start();
           SpeedStats.flush();
         }
         if (!value && SpeedStats.isRunning()) {
+          SpeedStats.flush();
           SpeedStats.stop();
         }
       }
     });
-    this.updateConnected();
   },
   updateConnected() {
     NetInfo.isConnected.fetch().then(connected => {
