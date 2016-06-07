@@ -36,21 +36,27 @@ function cleanupArray(arr) {
 }
 
 class Average {
-  constructor() {
-    this.total = 0.0;
-    this.hits = 0;
-    this.lastCall = 0;
+  constructor(total = 0.0, hits = 0) {
+    this.total = total;
+    this.hits = hits;
+    this.callTime = Date.now();
+    this.value = this.value.bind(this);
+    this.push = this.push.bind(this);
   }
   value() {
-    let avg = total / hits;
+    let avg = this.total / this.hits;
     avg = avg < 0 ? 0 : avg
     return avg;
   }
+  lastCall() {
+    return this.callTime;
+  }
   push(val) {
     if (val > 2.0) {
-      hits += 1;
-      total = total + val;
+      console.log('push ' + val);
+      return new Average(this.total + val, this.hits + 1);
     }
+    return this;
   }
 }
 
@@ -62,9 +68,10 @@ export const HUD = React.createClass({
       nativeWatch: nativeWatch(),
       mode: 'km/h',
       speedFactor: 1.0,
-      moy: 0,
-      moyArr: [],
-      lastMoy: 0,
+      moy: new Average(),
+      // moy: 0,
+      // moyArr: [],
+      // lastMoy: 0,
       mock: false,
       max: 0,
       mockSpeed: 42,
@@ -196,11 +203,13 @@ export const HUD = React.createClass({
       }
       const now = Date.now();
       // TODO : fix average
-      if (speed > 3.0 && ((now - this.state.lastMoy) > 5000)) {
-        const moy = this.state.moyArr.length > 0 ?
-          this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
-          0;
-        this.setState({ moyArr: cleanupArray([...this.state.moyArr, this.state.speed]), lastMoy: Date.now(), moy: moy < 0 ? 0 : moy });
+      // if (speed > 3.0 && ((now - this.state.lastMoy) > 5000)) {
+      if (speed > 3.0 && ((now - this.state.moy.lastCall()) > 5000)) {
+        this.setState({ moy: this.state.moy.push(speed) });
+        // const moy = this.state.moyArr.length > 0 ?
+        //  this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
+        //  0;
+        // this.setState({ moyArr: cleanupArray([...this.state.moyArr, this.state.speed]), lastMoy: Date.now(), moy: moy < 0 ? 0 : moy });
       }
     });
     this.unIdleApp();

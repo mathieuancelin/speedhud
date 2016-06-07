@@ -21,21 +21,25 @@ export function isError() {
 }
 
 export function start(cb) {
-  running = true;
-  sessionId = uuid.v4();
-  sendToServer();
-  console.log('Start sending stats');
-  if (cb) cb();
+  if (!running) {
+    running = true;
+    sessionId = uuid.v4();
+    sendToServer();
+    console.log('Start sending stats');
+    if (cb) cb();
+  }
 }
 
 export function stop(cb) {
   sendToServer();
-  running = false;
-  clearTimeout(timeoutId);
-  timeoutId = null;
-  sessionId = null;
-  console.log('Stop sending stats');
-  if (cb) cb();
+  if (running) {
+    running = false;
+    clearTimeout(timeoutId);
+    timeoutId = null;
+    sessionId = null;
+    console.log('Stop sending stats');
+    if (cb) cb();
+  }
 }
 
 export function toggle(cb) {

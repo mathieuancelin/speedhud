@@ -8,7 +8,7 @@ export const Topbar = React.createClass({
     mock: React.PropTypes.bool.isRequired,
     mockSpeed: React.PropTypes.number.isRequired,
     max: React.PropTypes.number.isRequired,
-    moy: React.PropTypes.number.isRequired,
+    moy: React.PropTypes.object.isRequired,
     speedFactor: React.PropTypes.number.isRequired,
     mode: React.PropTypes.string.isRequired,
     textColor: React.PropTypes.string.isRequired,
@@ -48,7 +48,7 @@ export const Topbar = React.createClass({
           </Text>
           <Text style={{ color: this.props.textColor, fontSize: 30, paddingTop: 14, opacity: 0.9 }}> / </Text>
           <Text style={{ color: this.props.textColor, fontSize: 50, paddingTop: 7 }}>
-            {this.props.mock ? this.props.mockSpeed : this.cleanupSpeed(this.props.moy).toFixed(0)}
+            {this.props.mock ? this.props.mockSpeed : this.cleanupSpeed(this.props.moy.value()).toFixed(0)}
           </Text>
           <Text style={{ color: this.props.textColor, fontSize: 17, paddingTop: 22, opacity: 0.9 }}> {this.props.mode}</Text>
         </View>
