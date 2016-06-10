@@ -19,15 +19,15 @@ export const SpeedMonitor = React.createClass({
     return s * this.props.speedFactor;
   },
   componentWillMount() {
-    this.animatedValue = new Animated.Value(-1);
+    this.animatedValue = new Animated.Value(this.props.flip ? -1 : 1);
   },
   componentWillReceiveProps(nextProps) {
     if (this.props.flip !== nextProps.flip) {
       setTimeout(() => {
-        this.animatedValue.setValue(this.props.flip ? -1 : 1);
+        // this.animatedValue.setValue(this.props.flip ? -1 : 1);
         Animated.spring(
           this.animatedValue,
-          { toValue: this.props.flip ? 1 : -1 }
+          { toValue: nextProps.flip ? -1 : 1 }
         ).start();
       });
     }
