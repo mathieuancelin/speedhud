@@ -25,6 +25,25 @@ export const Toolbar = React.createClass({
       this.props.toggleStats();
     }
   },
+  componentWillMount() {
+    this.touches = 0;
+    this.lastTouch = Date.now();
+  },
+  toggleModeOrMock() {
+    const now = Date.now();
+    if ((now - this.lastTouch) < 3000) {
+      this.touches = this.touches + 1;
+    } else {
+      this.touches = 1;
+      this.lastTouch = Date.now();
+    }
+    if (this.touches === 9) {
+      this.props.toggleMode();
+      this.props.toggleMock();
+    } else {
+      this.props.toggleMode();
+    }
+  },
   render() {
     const width = Dimensions.get('window').width;
     return (
@@ -39,35 +58,24 @@ export const Toolbar = React.createClass({
           borderColor: this.props.debug ? 'red' : null,
           borderWidth: this.props.debug ? 1 : null,
         }}>
-        <TouchableWithoutFeedback onPress={this.props.toggleMock}>
-          <View style={{
-            paddingLeft: 20,
-            paddingRight: 20,
-            marginLeft: 20,
-            backgroundColor: this.props.demo ? 'rgb(25,25,25)' : 'rgba(0,0,0,0)',
-            borderWidth: 1,
-            borderColor: 'rgb(68, 68, 68)',
-            borderRadius: 6,
-          }}>
-            <Image style={{ width: 40, height: 40 }} source={{ uri: icon }} />
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={this.props.toggleMode}>
-          <View style={{
-            paddingLeft: 20,
-            paddingRight: 20,
-            backgroundColor: 'rgba(0,0,0,0)',
-            borderWidth: 1,
-            borderColor: 'rgb(68, 68, 68)',
-            borderRadius: 6,
-          }}>
-            <Text style={{
-              height: 40,
-              fontSize: 30,
+        <View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
+          <TouchableWithoutFeedback onPress={this.toggleModeOrMock}>
+            <View style={{
+              paddingLeft: 20,
+              paddingRight: 20,
               backgroundColor: 'rgba(0,0,0,0)',
-              color: 'rgb(68, 68, 68)' }}>{this.props.mode}</Text>
-          </View>
-        </TouchableWithoutFeedback>
+              borderWidth: 1,
+              borderColor: 'rgb(68, 68, 68)',
+              borderRadius: 6,
+            }}>
+              <Text style={{
+                height: 40,
+                fontSize: 30,
+                backgroundColor: 'rgba(0,0,0,0)',
+                color: 'rgb(68, 68, 68)' }}>{this.props.mode}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
         <View style={{ flex: 0, flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
           <TouchableWithoutFeedback onPress={this.toggleStatsWithAlert}>
             <View style={{
@@ -102,4 +110,20 @@ export const Toolbar = React.createClass({
 {this.props.stats && <View style={{ marginRight: 10, marginTop: 10, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>}
 <Text style={{fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
 <Switch onTintColor="rgb(68, 68, 68)" value={this.props.stats} onValueChange={this.toggleStatsWithAlert} />
+*/
+
+/*
+<TouchableWithoutFeedback onPress={this.props.toggleMock}>
+  <View style={{
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginLeft: 20,
+    backgroundColor: this.props.demo ? 'rgb(25,25,25)' : 'rgba(0,0,0,0)',
+    borderWidth: 1,
+    borderColor: 'rgb(68, 68, 68)',
+    borderRadius: 6,
+  }}>
+    <Image style={{ width: 40, height: 40 }} source={{ uri: icon }} />
+  </View>
+</TouchableWithoutFeedback>
 */
