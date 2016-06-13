@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Animated, Dimensions, Text, View } from 'react-native';
+import { Platform, Animated, Dimensions, Text, View } from 'react-native';
 
 export const SpeedMonitor = React.createClass({
   propTypes: {
@@ -47,7 +47,7 @@ export const SpeedMonitor = React.createClass({
           borderColor: this.props.debug ? 'orange' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: this.animatedValue // this.props.flip ? -1 : 1
+            scaleX: Platform.OS === 'ios' ? this.animatedValue : (this.props.flip ? -1 : 1)
           }, {
             scaleY: 1
           }, {

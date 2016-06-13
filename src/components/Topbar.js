@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Animated, Dimensions, Image, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Animated, Dimensions, Image, StyleSheet, Platform, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 export const Topbar = React.createClass({
   propTypes: {
@@ -48,7 +48,7 @@ export const Topbar = React.createClass({
           borderColor: this.props.debug ? 'blue' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: this.animatedValue // this.props.flip ? -1 : 1
+            scaleX: Platform.OS === 'ios' ? this.animatedValue : (this.props.flip ? -1 : 1)
           }, {
             scaleY: 1
           }] }}>
