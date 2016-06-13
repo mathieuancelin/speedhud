@@ -61,7 +61,7 @@ export function push(data) {
 }
 
 export function flush() {
-  sendToServer();
+  return sendToServer();
 }
 
 export function saveIntoAsyncStorage() {
@@ -74,32 +74,49 @@ function sendToServer() {
   if (!running) return;
   if (sending) return;
   if (values.length > 0) {
-    const valuesToSend = values;
+    let valuesToSend = values;
     values = [];
     sending = true;
-    // TODO : if data into storage, then send it too
-    console.log(`Sending ${valuesToSend.length} report now`);
-    fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(valuesToSend)
-    }).then(data => {
-      error = false;
-      timeoutId = setTimeout(sendToServer, sendEvery);
-      sending = false;
-    }, e => {
-      console.log(`Error while sending data to the server : ${e.message}`);
-      error = true;
-      values = values.concat(valuesToSend);
-      timeoutId = setTimeout(sendToServer, sendEvery);
-      sending = false;
-      // TODO : save into async storage
+    return AsyncStorage.getItem('ERROR_REPORTS').then(
+      (data) => JSON.parse(data),
+      (error) => []
+    ).then(reports => {
+      valuesToSend = valuesToSend.concat(reports);
+      console.log(`Sending ${valuesToSend.length} report now`);
+      fetch(`http://api.speedhud.ovh:9000/speed/recording/${sessionId}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(valuesToSend)
+      }).then(data => {
+        error = false;
+        timeoutId = setTimeout(sendToServer, sendEvery);
+        sending = false;
+        return { status: 'DATA_SENT' };
+      }, e => {
+        console.log(`Error while sending data to the server : ${e.message}`);
+        error = true;
+        const valuesToStore = values.concat(valuesToSend);
+        values = [];
+        return AsyncStorage.setItem('ERROR_REPORTS', JSON.stringify(valuesToStore)).then(
+          (data) => ({ status: 'SAVED_ERRORS_IN_ASYNCSTORAGE' }),
+          (error) => {
+            console.log(`error while saving error reports in storage, ${e.message}`);
+            values = values.concat(valuesToStore);
+            return { status: 'SAVED_ERRORS_IN_MEMORY' };
+          }
+        ).then(() => {
+          timeoutId = setTimeout(sendToServer, sendEvery);
+          sending = false;
+        });
+      });
     });
+
   } else {
     timeoutId = setTimeout(sendToServer, sendEvery);
     sending = false;
+    return new Promise(success => success({ status: 'NOTHING_TO_SEND' }));
   }
 }

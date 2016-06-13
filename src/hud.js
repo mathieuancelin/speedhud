@@ -194,7 +194,7 @@ export const HUD = React.createClass({
         AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
         SpeedStats.start();
       } else {
-        console.log('user_send_stats from AsyncStorage', doc);
+        console.log(`user_send_stats from AsyncStorage ${doc}`);
         const value = JSON.parse(doc).value;
         if (value && !SpeedStats.isRunning()) {
           SpeedStats.start();
