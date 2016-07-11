@@ -35,8 +35,11 @@ export const Topbar = React.createClass({
     const minutes = new Date().getMinutes();
     const hours = new Date().getHours();
     const date = (hours < 10 ? `0${hours}` : hours)+ ':' + (minutes < 10 ? `0${minutes}` : minutes);
+    const predicate = true; // Platform.OS === 'ios';
+    const TheView = predicate ? Animated.View : View;
+    const scaleX = predicate ? this.animatedValue : (this.props.flip ? -1 : 1);
     return (
-      <Animated.View style={{
+      <TheView style={{
           width,
           flex: 0,
           flexDirection: 'row',
@@ -48,7 +51,7 @@ export const Topbar = React.createClass({
           borderColor: this.props.debug ? 'blue' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: Platform.OS === 'ios' ? this.animatedValue : (this.props.flip ? -1 : 1)
+            scaleX: scaleX
           }, {
             scaleY: 1
           }] }}>
@@ -67,7 +70,7 @@ export const Topbar = React.createClass({
           <Text style={{ color: this.props.textColor, fontSize: 17, paddingTop: 22, opacity: 0.9 }}> {this.props.mode}</Text>
         </View>
         <Text style={{ color: this.props.textColor, fontSize: 50 }}>{date}</Text>
-      </Animated.View>
+      </TheView>
     );
   }
 });

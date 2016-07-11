@@ -1,3 +1,36 @@
+# iOS
+
+## dev
+
+```
+npm start
+# in xcode run on device or in simulator
+```
+
+## release
+
+```
+cd ios
 agvtool bump -all
 agvtool new-marketing-version "1.0.1"
-Product / Archive
+# in xcode Product / Archive
+```
+
+# android
+
+## dev
+
+```
+npm start
+npm run start-emulator
+npm run deploy-android
+```
+
+## release
+
+```
+cd android
+./gradlew assembleRelease
+# ou
+./gradlew installRelease
+```

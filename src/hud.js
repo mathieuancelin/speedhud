@@ -66,10 +66,10 @@ export const HUD = React.createClass({
   onPanResponderMove(evt, gestureState) {
     if (this.state.gesture === 'started') {
       if (Math.abs(gestureState.vx) < 1 && Math.abs(gestureState.dy) > 10) {
-        if (gestureState.dy > 0 && this.state.angle > -45) {
-          this.setState({ angle: this.state.angle - 1 });
+        if (gestureState.dy > 0 && this.state.angle > - 45) {
+          this.setState({ angle: this.state.angle - 2 });
         } else if (gestureState.dy < 0 && this.state.angle < 45) {
-          this.setState({ angle: this.state.angle + 1 });
+          this.setState({ angle: this.state.angle + 2 });
         }
       }
       if (Math.abs(gestureState.vx) > 3.5) {
@@ -84,7 +84,7 @@ export const HUD = React.createClass({
   onPanResponderRelease(evt, gestureState) {
     this.setState({ gesture: 'none' });
     const { dx, dy, vx, vy } = gestureState;
-    if (dx === 0 && dy === 0 && vx === 0 && vy === 0) {
+    if (dx < 2 && dy < 2 && vx < 2 && vy < 2) {
       this.flip();
     }
   },

@@ -34,8 +34,11 @@ export const SpeedMonitor = React.createClass({
   },
   render() {
     const width = Dimensions.get('window').width;
+    const predicate = true; // Platform.OS === 'ios';
+    const TheView = predicate ? Animated.View : View;
+    const scaleX = predicate ? this.animatedValue : (this.props.flip ? -1 : 1);
     return (
-      <Animated.View {...this.props.panResponder.panHandlers} style={{
+      <TheView {...this.props.panResponder.panHandlers} style={{
           paddingTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
@@ -47,7 +50,7 @@ export const SpeedMonitor = React.createClass({
           borderColor: this.props.debug ? 'orange' : null,
           borderWidth: this.props.debug ? 1 : null,
           transform: [{
-            scaleX: Platform.OS === 'ios' ? this.animatedValue : (this.props.flip ? -1 : 1)
+            scaleX: scaleX
           }, {
             scaleY: 1
           }, {
@@ -72,7 +75,7 @@ export const SpeedMonitor = React.createClass({
           marginLeft: 30 }}>
           {this.props.mode}
         </Text>
-      </Animated.View>
+      </TheView>
     );
   }
 });
