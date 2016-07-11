@@ -188,10 +188,10 @@ export const HUD = React.createClass({
     this.rehydrateFromAsyncStorage();
     this.updateConnected();
     startTracking();
-    AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING').then(doc => {
+    AsyncStorage.getItem('USER_ACCEPTS_STATS_SENDING_11062016').then(doc => {
       if (doc === null) {
         console.log('first run, user will send data');
-        AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+        AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: true }))
         SpeedStats.start();
       } else {
         console.log(`user_send_stats from AsyncStorage ${doc}`);
@@ -236,9 +236,9 @@ export const HUD = React.createClass({
   },
   toggleStats() {
     if (SpeedStats.isRunning()) {
-      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: false }))
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: false }))
     } else {
-      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING', JSON.stringify({ value: true }))
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: true }))
     }
     SpeedStats.toggle(() => this.forceUpdate());
   },

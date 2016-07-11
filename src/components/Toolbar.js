@@ -90,11 +90,11 @@ export const Toolbar = React.createClass({
               borderColor: 'rgb(68, 68, 68)',
               borderRadius: 6,
               height: 40,
-              width: 250
+              width: 160
             }}>
               {this.props.sendError && <Text style={{ marginTop: 4, marginRight: 10, color: 'red' }}>∅</Text>}
               {this.props.stats && <View style={{ marginRight: 10, marginTop: 4, width: 10, height: 10, borderRadius: 5, backgroundColor: this.props.connected ? 'green' : 'red' }} ></View>}
-              <Text style={{ fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>send speed stats  </Text>
+              <Text style={{ fontSize: 20, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(68, 68, 68)'}}>speed stats</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
