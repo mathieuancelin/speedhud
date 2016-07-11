@@ -1,6 +1,6 @@
 const listeners = [];
 let lastPosition;
-let lastTime;
+let lastTime = 0;
 let watchId;
 let inspectorId;
 let watching = false;
@@ -49,7 +49,7 @@ function getSpeed(nextPos, lastPos, lastTime) {
     nextPos.coords.latitude,
     nextPos.coords.longitude
   );
-  return speed;
+  return String(speed) === 'NaN' ? 0.0 : speed;
 }
 
 function fetchAndDispatchPosition() {
@@ -97,13 +97,15 @@ function nativeWatchPosition() {
 }
 
 function inspector() {
-  if ((lastTime + 2000) < Date.now()) {
-    console.log('Inspector had to kick in ...');
+  if ((lastTime + 2000) === NaN || (lastTime + 2000) < Date.now()) {
+    // console.log('Inspector had to kick in ...');
     fetchAndDispatchPosition().then(() => {
       inspectorId = setTimeout(inspector, 2000);
     }, () => {
       inspectorId = setTimeout(inspector, 2000);
     });
+  } else {
+    inspectorId = setTimeout(inspector, 2000);
   }
 }
 

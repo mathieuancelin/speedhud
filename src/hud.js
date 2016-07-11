@@ -173,7 +173,7 @@ export const HUD = React.createClass({
       const now = Date.now();
       // TODO : fix average
       // if (speed > 3.0 && ((now - this.state.lastMoy) > 5000)) {
-      if (speed > 3.0 && ((now - this.state.moy.lastCall()) > 5000)) {
+      if (speed > 4.9 && ((now - this.state.moy.lastCall()) > 5000)) {
         this.setState({ moy: this.state.moy.push(speed) });
         // const moy = this.state.moyArr.length > 0 ?
         //  this.state.moyArr.reduce((a, b) => a + b) / this.state.moyArr.length :
