@@ -36,7 +36,7 @@ export function stop(cb) {
     running = false;
     clearTimeout(timeoutId);
     timeoutId = null;
-    sessionId = null;
+    // sessionId = null;
     console.log('Stop sending stats');
     if (cb) cb();
   }
