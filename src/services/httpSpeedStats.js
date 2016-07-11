@@ -64,6 +64,44 @@ export function flush() {
   return sendToServer();
 }
 
+export function pingStatsToggleOff() {
+  fetch(`http://api.speedhud.ovh:9000/speed/stats/${sessionId}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      stats: 'OFF',
+      ctime: Date.now(),
+      os: Platform.OS,
+    })
+  }).then(data => {
+    return { status: 'DATA_SENT' };
+  }, e => {
+    return { status: 'ERROR' };
+  });
+}
+
+export function pingStatsToggleOn() {
+  fetch(`http://api.speedhud.ovh:9000/speed/stats/${sessionId}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      stats: 'ON',
+      ctime: Date.now(),
+      os: Platform.OS,
+    })
+  }).then(data => {
+    return { status: 'DATA_SENT' };
+  }, e => {
+    return { status: 'ERROR' };
+  });
+}
+
 export function saveIntoAsyncStorage() {
   const valuesToSave = values;
   values = [];

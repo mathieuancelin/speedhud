@@ -236,9 +236,11 @@ export const HUD = React.createClass({
   },
   toggleStats() {
     if (SpeedStats.isRunning()) {
-      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: false }))
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: false }));
+      SpeedStats.pingStatsToggleOff();
     } else {
-      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: true }))
+      AsyncStorage.setItem('USER_ACCEPTS_STATS_SENDING_11062016', JSON.stringify({ value: true }));
+      SpeedStats.pingStatsToggleOn();
     }
     SpeedStats.toggle(() => this.forceUpdate());
   },

@@ -34,8 +34,13 @@ function calculateSpeed(t1, lt1, lng1, t2, lt2, lng2) {
 
 function getSpeed(nextPos, lastPos, lastTime) {
   const time = Date.now();
-  console.log(nextPos.coords.speed);
   const nativeSpeed = nextPos.coords.speed ? (nextPos.coords.speed * 3.6) : null;
+  if (!lastPos || !lastPos.coords || !lastTime) {
+    return 0.0;
+  }
+  if (!nextPos || !nextPos.coords) {
+    return 0.0;
+  }
   const speed = nativeSpeed || calculateSpeed(
     lastTime / 1000,
     lastPos.coords.latitude,
@@ -73,7 +78,6 @@ function fetchAndDispatchPosition() {
 
 function nativeWatchPosition() {
   watchId = navigator.geolocation.watchPosition(pos => {
-    // console.log('native watch');
     const speed = getSpeed(pos, lastPosition, lastTime); // pos.coords.speed ? (pos.coords.speed * 3.6) : 0.0;
     listeners.forEach(listener => listener({
       timestamp: pos.timestamp,
@@ -92,37 +96,9 @@ function nativeWatchPosition() {
   });
 }
 
-/*
-function fakeWatchPosition() {
-  function fetchPos() {
-    if (!watching) return;
-    navigator.geolocation.getCurrentPosition(pos => {
-      // console.log('emulated watch');
-      const speed = getSpeed(pos, lastPosition, lastTime); // pos.coords.speed ? (pos.coords.speed * 3.6) : 0.0;
-      listeners.forEach(listener => listener({
-        timestamp: pos.timestamp,
-        coords: pos.coords,
-        error: null,
-        speed,
-      }));
-      lastTime = Date.now();
-      lastPosition = pos;
-      setTimeout(fetchPos, 2000);
-    }, error => {
-      listeners.forEach(listener => listener({ error }));
-      setTimeout(fetchPos, 2000);
-    }, {
-      enableHighAccuracy: true,
-      maximumAge: 1000,
-      timeout: 1000,
-    });
-  }
-  fetchPos();
-}
-*/
-
 function inspector() {
   if ((lastTime + 2000) < Date.now()) {
+    console.log('Inspector had to kick in ...');
     fetchAndDispatchPosition().then(() => {
       inspectorId = setTimeout(inspector, 2000);
     }, () => {
@@ -165,3 +141,33 @@ export function subscribe(listener) {
     listeners.splice(index, 1);
   };
 }
+
+
+/*
+function fakeWatchPosition() {
+  function fetchPos() {
+    if (!watching) return;
+    navigator.geolocation.getCurrentPosition(pos => {
+      // console.log('emulated watch');
+      const speed = getSpeed(pos, lastPosition, lastTime); // pos.coords.speed ? (pos.coords.speed * 3.6) : 0.0;
+      listeners.forEach(listener => listener({
+        timestamp: pos.timestamp,
+        coords: pos.coords,
+        error: null,
+        speed,
+      }));
+      lastTime = Date.now();
+      lastPosition = pos;
+      setTimeout(fetchPos, 2000);
+    }, error => {
+      listeners.forEach(listener => listener({ error }));
+      setTimeout(fetchPos, 2000);
+    }, {
+      enableHighAccuracy: true,
+      maximumAge: 1000,
+      timeout: 1000,
+    });
+  }
+  fetchPos();
+}
+*/
