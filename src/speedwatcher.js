@@ -98,7 +98,7 @@ function nativeWatchPosition() {
 
 function inspector() {
   if ((lastTime + 2000) === NaN || (lastTime + 2000) < Date.now()) {
-    // console.log('Inspector had to kick in ...');
+    console.log('Inspector had to kick in ...');
     fetchAndDispatchPosition().then(() => {
       inspectorId = setTimeout(inspector, 2000);
     }, () => {
